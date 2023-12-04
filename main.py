@@ -314,6 +314,20 @@ def calc_horas_diarias(hora_entrada_manha, hora_saida_manha, hora_entrada_tarde,
     return horas_trabalhadas
 
 
+def calc_hora_extra(hora_extra_entrada, hora_extra_saida):
+    horario1 = datetime.datetime.strptime(hora_extra_entrada, '%H:%M')
+    horario2 = datetime.datetime.strptime(hora_extra_saida, '%H:%M')
+
+    diferenca = horario2 - horario1
+
+    horas, minutos = divmod(diferenca.seconds, 3600)
+    minutos //= 60
+
+    horas_trabalhadas = f'{horas:02d}:{minutos:02d}'
+
+    return horas_trabalhadas
+
+
 def lista_dias(data):
     primeiro_dia_do_mes = datetime.datetime(data.year, data.month, 1)
     ultimo_dia_do_mes = datetime.datetime(data.year, data.month, calendar.monthrange(data.year, data.month)[1])
@@ -357,17 +371,18 @@ def ponto(funcionario, empresa, expediente_normal, hora_entrada_manha, hora_said
     lista_mes = lista_dias(expediente_normal[0])
     i = 4
     j = 0
-    tam = len(expediente_normal)
+    n = 0
+    tam1 = len(expediente_normal)
+    tam2 = len(hora_extra)
     horas_trabalhadas = ''
-    print(f'Esta é a lista_mes {lista_mes}')
-    print(f'Esté é o expediente normal {expediente_normal}')
-    print(f'expediente index {expediente_normal[j]}')
-    print(f'Hora entrada manha {hora_entrada_manha} hora saida manha {hora_saida_manha} hora entrada tarde {hora_entrada_tarde} hora saida tarde {hora_saida_tarde}')
+
+    diferenca = calc_hora_extra(hora_extra_entrada, hora_extra_saida)
+
     for data in lista_mes:
         sheet.cell(row=i, column=1, value=data['data'])
         sheet.cell(row=i, column=2, value=data['dia_da_semana_abreviado'])
 
-        if j < tam and expediente_normal[j] == data['data']:
+        if j < tam1 and expediente_normal[j] == data['data']:
             sheet.cell(row=i, column=4, value=hora_entrada_manha)
             sheet.cell(row=i, column=5, value=hora_saida_manha)
             sheet.cell(row=i, column=6, value=hora_entrada_tarde)
@@ -378,10 +393,16 @@ def ponto(funcionario, empresa, expediente_normal, hora_entrada_manha, hora_said
             sheet.cell(row=i, column=10, value=horas_trabalhadas)
             j += 1
 
+        if n < tam2 and hora_extra[n] == data['data']:
+            sheet.cell(row=i, column=11, value=diferenca)
+            n += 1
+
         i += 1
 
     horas_trabalhadas = calc_horas_mensais(horas_trabalhadas, j)
     sheet.cell(row=35, column=10, value=horas_trabalhadas)
+    horas_trabalhadas = calc_horas_mensais(diferenca, n)
+    sheet.cell(row=35, column=11, value=horas_trabalhadas)
 
     workbook.save('calcular_horas.xlsx')
 
@@ -428,12 +449,6 @@ def main(page: Page):
         def func(e):
             expediente_normal = date_normal.cal_grid.date()
             hora_extra = date_hora_extra.cal_grid.date()
-
-            print(f'este é {funcionario.value}, trabalha na {dropdown_empresa.value} e compareceu nos dias '
-                  f'{expediente_normal} e trabalhou das {hora_entrada_manha.value} às {hora_saida_manha.value} e das '
-                  f'{hora_entrada_tarde.value} às {hora_saida_tarde.value}')
-
-            print(f'Hora extra nos dias {hora_extra} das {hora_extra_entrada.value} às {hora_extra_saida.value}')
 
             ponto(funcionario.value, dropdown_empresa.value, expediente_normal, hora_entrada_manha.value,
                   hora_saida_manha.value, hora_entrada_tarde.value, hora_saida_tarde.value, hora_extra,
