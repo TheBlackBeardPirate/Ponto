@@ -89,15 +89,19 @@ class SetCalendar(UserControl):
             pass
 
     def create_month_calendar(self, year):
+
+        month_grid = None
+
         self.current_year = year
-        self.calendar_grid.controls: list = []
+        # self.calendar_grid.controls: list = []
+        self.calendar_grid.controls = []
 
         for month in range(self.m1, self.m2):
             month_label = Text(
                 value=f'{calendar.month_name[month]} {self.current_year}',
                 color='white',
                 size=14,
-                weight='bold',
+                weight=FontWeight('bold'),
             )
 
             month_matrix = calendar.monthcalendar(self.current_year, month)
@@ -137,7 +141,7 @@ class SetCalendar(UserControl):
                         day_container = Container(
                             width=28,
                             height=28,
-                            border=border.all(0.5, 'white54'),
+                            border=border.all(width=0.5, color='white54'),
                             alignment=alignment.center,
                             data=datetime.date(
                                 year=self.current_year,
@@ -185,7 +189,7 @@ class DateSetUp(UserControl):
             width=260,
             size=13,
             color='white54',
-            weight='w400'
+            weight=FontWeight('w400')
         )
 
         self.btn_container = Row(
@@ -271,7 +275,7 @@ class BTNPagination(UserControl):
 
     def build(self):
         return IconButton(
-            content=Text(self.txt_name, size=8, weight='bold'),
+            content=Text(self.txt_name, size=8, weight=FontWeight('bold')),
             width=56,
             height=28,
             on_click=self.function,
@@ -284,6 +288,17 @@ class BTNPagination(UserControl):
                 }
             )
         )
+
+
+def inicializa_planilha(workbook, sheet):
+    for y in range(4, 36):
+        for x in range(1, 15):
+            sheet.cell(row=y, column=x, value='')
+
+    for x in range(36, 41):
+        sheet.cell(row=x, column=4, value='')
+
+    workbook.save('calcular_horas.xlsx')
 
 
 def calc_horas_mensais(horario, multiplicador):
@@ -365,6 +380,9 @@ def ponto(funcionario, empresa, expediente_normal, hora_entrada_manha, hora_said
           hora_saida_tarde, hora_extra, hora_extra_entrada, hora_extra_saida):
     workbook = openpyxl.load_workbook('calcular_horas.xlsx')
     sheet = workbook['Planilha1']
+
+    inicializa_planilha(workbook, sheet)
+
     sheet.cell(row=1, column=4, value=empresa)
     sheet.cell(row=2, column=4, value=funcionario)
     sheet.cell(row=2, column=14, value=expediente_normal[0].strftime("%m/%Y"))
@@ -379,7 +397,7 @@ def ponto(funcionario, empresa, expediente_normal, hora_entrada_manha, hora_said
     diferenca = calc_hora_extra(hora_extra_entrada, hora_extra_saida)
 
     for data in lista_mes:
-        sheet.cell(row=i, column=1, value=data['data'])
+        sheet.cell(row=i, column=1, value=data['data'].strftime("%d/%m/%Y"))
         sheet.cell(row=i, column=2, value=data['dia_da_semana_abreviado'])
 
         if j < tam1 and expediente_normal[j] == data['data']:
@@ -399,15 +417,16 @@ def ponto(funcionario, empresa, expediente_normal, hora_entrada_manha, hora_said
 
         i += 1
 
-    horas_trabalhadas = calc_horas_mensais(horas_trabalhadas, j)
-    sheet.cell(row=35, column=10, value=horas_trabalhadas)
-    horas_trabalhadas = calc_horas_mensais(diferenca, n)
-    sheet.cell(row=35, column=11, value=horas_trabalhadas)
+    horas_trab_normal = calc_horas_mensais(horas_trabalhadas, j)
+    sheet.cell(row=36, column=4, value=horas_trab_normal)
+    horas_trab_extra = calc_horas_mensais(diferenca, n)
+    sheet.cell(row=37, column=4, value=horas_trab_extra)
 
     workbook.save('calcular_horas.xlsx')
 
 
 def main(page: Page):
+
     page.title = 'Ponto Eletrônico'
     page.theme_mode = ThemeMode.DARK
 
@@ -445,14 +464,22 @@ def main(page: Page):
 
     hora_extra_saida = TextField(label="Horário de fim", hint_text="23:00", width=310)
 
+    dlg = flet.AlertDialog(
+        title=flet.Text("Planilha Ponto criada com sucesso!")
+    )
+
     def mudanca_de_rota(route):
-        def func(e):
+        def gerar_ponto(e):
             expediente_normal = date_normal.cal_grid.date()
             hora_extra = date_hora_extra.cal_grid.date()
 
             ponto(funcionario.value, dropdown_empresa.value, expediente_normal, hora_entrada_manha.value,
                   hora_saida_manha.value, hora_entrada_tarde.value, hora_saida_tarde.value, hora_extra,
                   hora_extra_entrada.value, hora_extra_saida.value)
+
+            page.dialog = dlg
+            dlg.open = True
+            page.update()
 
         page.views.clear()
 
@@ -504,7 +531,7 @@ def main(page: Page):
                             Row([
                                 Divider(height=9, thickness=3),
                                 ElevatedButton(text='Gerar Ficha Ponto', color='#00C60C', icon="add", bgcolor='#1445A6',
-                                               height=50, on_click=func)
+                                               height=50, on_click=gerar_ponto)
                             ])
                         ],
                     )
