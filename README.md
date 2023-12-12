@@ -1,2 +1,54 @@
 # Ponto
 Sistema de ponto eletrônico
+
+## Versions
+Jinja2	3.1.2	3.1.2
+MarkupSafe	2.1.3	2.1.3
+Pillow	10.1.0	10.1.0
+PyYAML	6.0.1	6.0.1
+Pygments	2.17.2	2.17.2
+anyio	4.1.0	4.1.0
+arrow	1.3.0	1.3.0
+binaryornot	0.4.4	0.4.4
+certifi	2023.11.17	2023.11.17
+chardet	5.2.0	5.2.0
+charset-normalizer	3.3.2	3.3.2
+click	8.1.7	8.1.7
+cookiecutter	2.5.0	2.5.0
+et-xmlfile	1.1.0	1.1.0
+flet	0.13.0	0.15.0
+flet-core	0.13.0	0.15.0
+flet-runtime	0.13.0	0.15.0
+h11	0.14.0	0.14.0
+httpcore	0.17.3	1.0.2
+httpx	0.24.1	0.25.2
+idna	3.6	3.6
+markdown-it-py	3.0.0	3.0.0
+mdurl	0.1.2	0.1.2
+numpy	1.26.2	1.26.2
+oauthlib	3.2.2	3.2.2
+openpyxl	3.1.2	3.1.2
+packaging	23.2	23.2
+pandas	2.1.3	2.1.4
+pip	23.2.1	23.3.1
+pypng	0.20220715.0	0.20220715.0
+python-dateutil	2.8.2	2.8.2
+python-slugify	8.0.1	8.0.1
+pytz	2023.3.post1	2023.3.post1
+qrcode	7.4.2	7.4.2
+repath	0.9.0	0.9.0
+reportlab	4.0.7	4.0.8
+requests	2.31.0	2.31.0
+rich	13.7.0	13.7.0
+setuptools	68.2.0	69.0.2
+six	1.16.0	1.16.0
+sniffio	1.3.0	1.3.0
+text-unidecode	1.3	1.3
+types-python-dateutil	2.8.19.14	2.8.19.14
+typing_extensions	4.8.0	4.9.0
+tzdata	2023.3	2023.3
+urllib3	2.1.0	2.1.0
+watchdog	3.0.0	3.0.0
+websocket-client	1.6.4	1.7.0
+websockets	11.0.3	12.0
+wheel	0.41.2	0.42.0
