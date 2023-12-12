@@ -1,7 +1,7 @@
-# Ponto
-Sistema de ponto eletrônico
+# Sistema de Banco de Horas
+Gera uma planilha com as informações sobre os dias de trabalho, a carga horária, a empresa e o nome do funcionário com o objetivo de documentar as horas laborais do colaborador durante o mês em questão.
 
-## Package Versions
+### Package Versions
 Jinja2	3.1.2
 MarkupSafe	2.1.3
 Pillow	10.1.0
