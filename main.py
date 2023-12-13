@@ -49,7 +49,6 @@ class SetCalendar(UserControl):
             e.control.update()
             self.update()
             self.date_count.append(self.selected_date)
-            # print(self.date_count)
         else:
             e.control.bgcolor = colors.SURFACE_VARIANT,
             e.control.update()
@@ -60,7 +59,6 @@ class SetCalendar(UserControl):
                 else:
                     self.date_count.pop(n)
             self.update()
-            # print(self.date_count)
 
     def long_click_date(self, e):
         self.long_press_count.append(e.control.data)
@@ -93,7 +91,6 @@ class SetCalendar(UserControl):
         month_grid = None
 
         self.current_year = year
-        # self.calendar_grid.controls: list = []
         self.calendar_grid.controls = []
 
         for month in range(self.m1, self.m2):
